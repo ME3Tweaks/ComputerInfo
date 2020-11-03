@@ -11,8 +11,7 @@ namespace NickStrupat
         public static UInt64 GetTotalVirtualMemory() => GetBytesFromLine("SwapTotal:");
         public static UInt64 GetAvailableVirtualMemory() => GetBytesFromLine("SwapFree:");
         private static String[] GetProcMemInfoLines() => File.ReadAllLines("/proc/meminfo");
-        //private static String[] GetProcCpuInfoLines() => File.ReadAllLines("/proc/cpuinfo");
-        private static String[] GetProcCpuInfoLines() => File.ReadAllLines(@"X:\Downloads\cpuinfo.txt");
+        private static String[] GetProcCpuInfoLines() => File.ReadAllLines("/proc/cpuinfo");
         public static String CPUVendor() => GetValueFromLine("vendor_id");
         public static String CPUName() => GetValueFromLine("model name");
 
