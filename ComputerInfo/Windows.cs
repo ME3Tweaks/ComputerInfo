@@ -1,20 +1,64 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Management;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
 namespace NickStrupat
 {
-    internal static class Windows {
-        public static UInt64 GetTotalPhysicalMemory()     => MemoryStatus.TotalPhysicalMemory;
+    internal static class Windows
+    {
+        public static UInt64 GetTotalPhysicalMemory() => MemoryStatus.TotalPhysicalMemory;
         public static UInt64 GetAvailablePhysicalMemory() => MemoryStatus.AvailablePhysicalMemory;
-        public static UInt64 GetTotalVirtualMemory()      => MemoryStatus.TotalVirtualMemory;
-        public static UInt64 GetAvailableVirtualMemory()  => MemoryStatus.AvailableVirtualMemory;
+        public static UInt64 GetTotalVirtualMemory() => MemoryStatus.TotalVirtualMemory;
+        public static UInt64 GetAvailableVirtualMemory() => MemoryStatus.AvailableVirtualMemory;
 
         public static String OSFullName = "Microsoft " + Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion").GetValue("ProductName");
 
+        public static String CPUVendor()
+        {
+            try
+            {
+                ManagementObjectSearcher mosProcessor = new ManagementObjectSearcher("SELECT Manufacturer FROM Win32_Processor");
+                foreach (ManagementObject moProcessor in mosProcessor.Get())
+                {
+                    if (moProcessor["Manufacturer"] != null)
+                    {
+                        return moProcessor["Manufacturer"].ToString().Trim();
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return null;
+
+        }
+
+        public static String CPUName()
+        {
+            try
+            {
+                ManagementObjectSearcher mosProcessor = new ManagementObjectSearcher("SELECT NAME FROM Win32_Processor");
+                foreach (ManagementObject moProcessor in mosProcessor.Get())
+                {
+                    if (moProcessor["Name"] != null)
+                    {
+                        return moProcessor["Name"].ToString().Trim();
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return null;
+        }
+
+
         private static InternalMemoryStatus internalMemoryStatus;
         private static InternalMemoryStatus MemoryStatus => internalMemoryStatus ?? (internalMemoryStatus = new InternalMemoryStatus());
+
 
         private class InternalMemoryStatus
         {
@@ -27,29 +71,37 @@ namespace NickStrupat
                 isOldOS = Environment.OSVersion.Version.Major < 5;
             }
 
-            internal UInt64 TotalPhysicalMemory {
-                get {
+            internal UInt64 TotalPhysicalMemory
+            {
+                get
+                {
                     Refresh();
                     return !isOldOS ? memoryStatusEx.ullTotalPhys : memoryStatus.dwTotalPhys;
                 }
             }
 
-            internal UInt64 AvailablePhysicalMemory {
-                get {
+            internal UInt64 AvailablePhysicalMemory
+            {
+                get
+                {
                     Refresh();
                     return !isOldOS ? memoryStatusEx.ullAvailPhys : memoryStatus.dwAvailPhys;
                 }
             }
 
-            internal UInt64 TotalVirtualMemory {
-                get {
+            internal UInt64 TotalVirtualMemory
+            {
+                get
+                {
                     Refresh();
                     return !isOldOS ? memoryStatusEx.ullTotalVirtual : memoryStatus.dwTotalVirtual;
                 }
             }
 
-            internal UInt64 AvailableVirtualMemory {
-                get {
+            internal UInt64 AvailableVirtualMemory
+            {
+                get
+                {
                     Refresh();
                     return !isOldOS ? memoryStatusEx.ullAvailVirtual : memoryStatus.dwAvailVirtual;
                 }

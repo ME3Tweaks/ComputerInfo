@@ -12,18 +12,24 @@ namespace NickStrupat
                 GetAvailablePhysicalMemory = Windows.GetAvailablePhysicalMemory;
                 GetTotalVirtualMemory      = Windows.GetTotalVirtualMemory;
                 GetAvailableVirtualMemory  = Windows.GetAvailableVirtualMemory;
+                GetCPUVendor = Windows.CPUVendor;
+                GetCPUName = Windows.CPUName;
             }
             else if (IsMacOS) {
                 GetTotalPhysicalMemory     = MacOS.GetTotalPhysicalMemory;
                 GetAvailablePhysicalMemory = MacOS.GetAvailablePhysicalMemory;
                 GetTotalVirtualMemory      = MacOS.GetTotalVirtualMemory;
                 GetAvailableVirtualMemory  = MacOS.GetAvailableVirtualMemory;
+                GetCPUVendor = () => "Not supported";
+                GetCPUName = () => "Not supported";
             }
             else if (IsLinux) {
                 GetTotalPhysicalMemory     = Linux.GetTotalPhysicalMemory;
                 GetAvailablePhysicalMemory = Linux.GetAvailablePhysicalMemory;
                 GetTotalVirtualMemory      = Linux.GetTotalVirtualMemory;
                 GetAvailableVirtualMemory  = Linux.GetAvailableVirtualMemory;
+                GetCPUVendor = Linux.CPUVendor;
+                GetCPUName = Linux.CPUName;
             }
             else
                 throw new PlatformNotSupportedException();
@@ -37,11 +43,15 @@ namespace NickStrupat
         private static readonly Func<UInt64> GetAvailablePhysicalMemory;
         private static readonly Func<UInt64> GetTotalVirtualMemory;
         private static readonly Func<UInt64> GetAvailableVirtualMemory;
+        private static readonly Func<String> GetCPUVendor;
+        private static readonly Func<String> GetCPUName;
 
         public UInt64 TotalPhysicalMemory     => GetTotalPhysicalMemory.Invoke();
         public UInt64 AvailablePhysicalMemory => GetAvailablePhysicalMemory.Invoke();
         public UInt64 TotalVirtualMemory      => GetTotalVirtualMemory.Invoke();
         public UInt64 AvailableVirtualMemory  => GetAvailableVirtualMemory.Invoke();
+        public String CPUVendor => GetCPUVendor.Invoke();
+        public String CPUName => GetCPUName.Invoke();
 
         public CultureInfo InstalledUICulture => CultureInfo.InstalledUICulture;
         public String      OSFullName         => IsWindows ? Windows.OSFullName : RuntimeEnvironment.OperatingSystem + " " + RuntimeEnvironment.OperatingSystemVersion;
