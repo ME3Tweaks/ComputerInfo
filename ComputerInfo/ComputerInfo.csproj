@@ -9,7 +9,7 @@
     <Authors>Nick Strupat</Authors>
     <Company />
     <Product />
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>0.1.0-prerelease</Version>
     <PackageTags>computerinfo</PackageTags>
     <Platforms>x64</Platforms>
