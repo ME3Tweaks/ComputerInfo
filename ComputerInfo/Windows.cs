@@ -14,7 +14,8 @@ namespace NickStrupat
         public static UInt64 GetTotalVirtualMemory() => MemoryStatus.TotalVirtualMemory;
         public static UInt64 GetAvailableVirtualMemory() => MemoryStatus.AvailableVirtualMemory;
 
-        public static String OSFullName = "Microsoft " + Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion").GetValue("ProductName");
+        //We call trim as if ReleaseId is not set (Windows 8.1) it will trim the data off.
+        public static String OSFullName = ($"Microsoft {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ProductName")} {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ReleaseId")}").Trim(); 
 
         public static String CPUVendor()
         {

@@ -13,6 +13,7 @@
     <Version>0.1.0-prerelease</Version>
     <PackageTags>computerinfo</PackageTags>
     <Platforms>x64</Platforms>
+    <Configurations>Debug;Release;WinRelease</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
