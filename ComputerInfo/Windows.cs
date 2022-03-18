@@ -13,9 +13,10 @@ namespace NickStrupat
         public static UInt64 GetAvailablePhysicalMemory() => MemoryStatus.AvailablePhysicalMemory;
         public static UInt64 GetTotalVirtualMemory() => MemoryStatus.TotalVirtualMemory;
         public static UInt64 GetAvailableVirtualMemory() => MemoryStatus.AvailableVirtualMemory;
+        public static int GetMemorySpeed() => MemoryStatus.MemorySpeed;
 
         //We call trim as if ReleaseId is not set (Windows 8.1) it will trim the data off.
-        public static String OSFullName = ($"Microsoft {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ProductName")} {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ReleaseId")}").Trim(); 
+        public static String OSFullName = ($"Microsoft {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ProductName")} {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ReleaseId")}").Trim();
 
         public static String CPUVendor()
         {
@@ -66,6 +67,7 @@ namespace NickStrupat
             private readonly Boolean isOldOS;
             private MEMORYSTATUS memoryStatus;
             private MEMORYSTATUSEX memoryStatusEx;
+            private int _memorySpeed;
 
             internal InternalMemoryStatus()
             {
@@ -105,6 +107,26 @@ namespace NickStrupat
                 {
                     Refresh();
                     return !isOldOS ? memoryStatusEx.ullAvailVirtual : memoryStatus.dwAvailVirtual;
+                }
+            }
+
+            internal int MemorySpeed
+            {
+                get
+                {
+                    if (_memorySpeed > 0) return _memorySpeed;
+
+                    ManagementObjectSearcher mosProcessor = new ManagementObjectSearcher("SELECT ConfiguredClockSpeed FROM Win32_PhysicalMemory");
+                    foreach (ManagementObject moProcessor in mosProcessor.Get())
+                    {
+                        if (moProcessor["ConfiguredClockSpeed"] != null && int.TryParse(moProcessor["ConfiguredClockSpeed"].ToString(), out _memorySpeed))
+                        {
+                            // This is not used.
+                            break;
+                        }
+                    }
+
+                    return _memorySpeed;
                 }
             }
 

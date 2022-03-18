@@ -12,6 +12,7 @@ namespace NickStrupat
                 GetAvailablePhysicalMemory = Windows.GetAvailablePhysicalMemory;
                 GetTotalVirtualMemory      = Windows.GetTotalVirtualMemory;
                 GetAvailableVirtualMemory  = Windows.GetAvailableVirtualMemory;
+                GetMemorySpeed             = Windows.GetMemorySpeed;
                 GetCPUVendor = Windows.CPUVendor;
                 GetCPUName = Windows.CPUName;
             }
@@ -20,6 +21,7 @@ namespace NickStrupat
                 GetAvailablePhysicalMemory = MacOS.GetAvailablePhysicalMemory;
                 GetTotalVirtualMemory      = MacOS.GetTotalVirtualMemory;
                 GetAvailableVirtualMemory  = MacOS.GetAvailableVirtualMemory;
+                GetMemorySpeed = () => 0; // Not supported
                 GetCPUVendor = () => "Not supported";
                 GetCPUName = () => "Not supported";
             }
@@ -28,6 +30,7 @@ namespace NickStrupat
                 GetAvailablePhysicalMemory = Linux.GetAvailablePhysicalMemory;
                 GetTotalVirtualMemory      = Linux.GetTotalVirtualMemory;
                 GetAvailableVirtualMemory  = Linux.GetAvailableVirtualMemory;
+                GetMemorySpeed = () => 0; // Not supported
                 GetCPUVendor = Linux.CPUVendor;
                 GetCPUName = Linux.CPUName;
             }
@@ -44,12 +47,14 @@ namespace NickStrupat
         private static readonly Func<UInt64> GetTotalVirtualMemory;
         private static readonly Func<UInt64> GetAvailableVirtualMemory;
         private static readonly Func<String> GetCPUVendor;
+        private static readonly Func<int> GetMemorySpeed;
         private static readonly Func<String> GetCPUName;
 
         public UInt64 TotalPhysicalMemory     => GetTotalPhysicalMemory.Invoke();
         public UInt64 AvailablePhysicalMemory => GetAvailablePhysicalMemory.Invoke();
         public UInt64 TotalVirtualMemory      => GetTotalVirtualMemory.Invoke();
         public UInt64 AvailableVirtualMemory  => GetAvailableVirtualMemory.Invoke();
+        public int MemorySpeed  => GetMemorySpeed.Invoke();
         public String CPUVendor => GetCPUVendor.Invoke();
         public String CPUName => GetCPUName.Invoke();
 
