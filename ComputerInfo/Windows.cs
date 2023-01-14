@@ -15,8 +15,28 @@ namespace NickStrupat
         public static UInt64 GetAvailableVirtualMemory() => MemoryStatus.AvailableVirtualMemory;
         public static int GetMemorySpeed() => MemoryStatus.MemorySpeed;
 
+        // This doesn't work properly on Windows 11 - Microsoft seems unable to make a consistent way of getting OS name.
         //We call trim as if ReleaseId is not set (Windows 8.1) it will trim the data off.
-        public static String OSFullName = ($"Microsoft {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ProductName")} {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ReleaseId")}").Trim();
+        //public static String OSFullName = ($"Microsoft {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ProductName")} {Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue("ReleaseId")}").Trim();
+
+        /// <summary>
+        /// Can return null!
+        /// </summary>
+        public static string OSFullName
+        {
+            get
+            {
+                string osName = null;
+                var wmi = new ManagementObjectSearcher(@"select * from Win32_OperatingSystem");
+                foreach (ManagementObject obj in wmi.Get())
+                {
+                    osName = obj[@"Caption"] as string;
+                    break;
+                }
+
+                return osName;
+            }
+        }
 
         public static String CPUVendor()
         {
