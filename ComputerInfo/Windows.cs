@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Management;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -36,6 +37,16 @@ namespace NickStrupat
 
                 return osName;
             }
+        }
+
+        /// <summary>
+        /// Checks for a process named winlogon, which is required for Windows to be running. This is not foolproof detection but will cover the majority of cases.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsActuallyWindows()
+        {
+            var winLogons = Process.GetProcessesByName(@"winlogon");
+            return winLogons.Length > 0;
         }
 
         public static String CPUVendor()
