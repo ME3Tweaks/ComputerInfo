@@ -28,15 +28,47 @@ namespace NickStrupat
             get
             {
                 string osName = null;
-                var wmi = new ManagementObjectSearcher(@"select * from Win32_OperatingSystem");
+                var wmi = new ManagementObjectSearcher(@"select Caption from Win32_OperatingSystem");
                 foreach (ManagementObject obj in wmi.Get())
                 {
                     osName = obj[@"Caption"] as string;
+                    var displayVersion = GetWindowsDisplayVersion();
+                    if (displayVersion != null)
+                    {
+                        osName += $@" {displayVersion}";
+                    }
                     break;
                 }
 
+
                 return osName;
             }
+        }
+
+        /// <summary>
+        /// Gets the YearH version from the registry, only supported on Windows 10 2020 editions and above.
+        /// </summary>
+        /// <returns></returns>
+        private static string GetWindowsDisplayVersion()
+        {
+            const string registryPath = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
+
+            try
+            {
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryPath))
+                {
+                    if (key != null)
+                    {
+                        // The "DisplayVersion" key holds values like "22H2" or "23H2"
+                        return key.GetValue("DisplayVersion") as string;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return null;
         }
 
         /// <summary>
