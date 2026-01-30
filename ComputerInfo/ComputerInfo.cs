@@ -5,8 +5,31 @@ using RuntimeEnvironment = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironm
 
 namespace NickStrupat
 {
+    /// <summary>
+    /// Operating system enum
+    /// </summary>
+    public enum EOSPlatform
+    {
+        Windows,
+        MacOS,
+        Linux
+    }
+
     public class ComputerInfo
     {
+        // ME3Tweaks =============
+        /// <summary>
+        /// Force overrides the platform
+        /// </summary>
+        /// <param name="platform"></param>
+        public static void ForcePlatform(EOSPlatform platform)
+        {
+            IsWindows = platform == EOSPlatform.Windows;
+            IsMacOS = platform == EOSPlatform.MacOS;
+            IsLinux = platform == EOSPlatform.Linux;
+        }
+
+        // End ME3Tweaks =========
         static ComputerInfo()
         {
             if (IsWindows)
@@ -46,9 +69,10 @@ namespace NickStrupat
                 throw new PlatformNotSupportedException();
         }
 
-        private static readonly Boolean IsWindows = RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
-        private static readonly Boolean IsMacOS = RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
-        private static readonly Boolean IsLinux = RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
+        // ME3Tweaks - these used to be marked readonly, removed to support overrides
+        private static Boolean IsWindows = RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+        private static Boolean IsMacOS = RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
+        private static Boolean IsLinux = RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
 
         private static readonly Func<UInt64> GetTotalPhysicalMemory;
         private static readonly Func<UInt64> GetAvailablePhysicalMemory;
