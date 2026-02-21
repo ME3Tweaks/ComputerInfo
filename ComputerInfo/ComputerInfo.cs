@@ -30,8 +30,8 @@ namespace NickStrupat
             IsMacOS = platform == EOSPlatform.MacOS;
             IsLinux = platform == EOSPlatform.Linux;
         }
-        // End ME3Tweaks =========
 
+        // End ME3Tweaks =========
         public ComputerInfo()
         {
             if (IsWindows)
@@ -43,6 +43,10 @@ namespace NickStrupat
                 GetMemorySpeed = Windows.GetMemorySpeed;
                 GetCPUVendor = Windows.CPUVendor;
                 GetCPUName = Windows.CPUName;
+                GetCPUMaxClock = () => 0; // Not supported
+                GetCPUAvgClock = () => 0; // Not supported
+                GetCPUPhysicalCores = () => 0; // Not supported
+                GetCPULogicalCores = () => 0; // Not supported
                 IsActuallyPlatform = Windows.IsActuallyWindows;
             }
             // ME3Tweaks =============
@@ -55,6 +59,10 @@ namespace NickStrupat
                 GetMemorySpeed = () => 0; // Not supported
                 GetCPUVendor = Wine.CPUVendor;
                 GetCPUName = Wine.CPUName;
+                GetCPUMaxClock = Wine.CPUMaxClock;
+                GetCPUAvgClock = Wine.CPUAvgClock;
+                GetCPUPhysicalCores = Wine.CPUPhysicalCores;
+                GetCPULogicalCores = Wine.CPULogicalCores;
                 IsActuallyPlatform = () => false; // This is not Windows
             }
             // End ME3Tweaks =========
@@ -67,6 +75,10 @@ namespace NickStrupat
                 GetMemorySpeed = () => 0; // Not supported
                 GetCPUVendor = () => "Not supported";
                 GetCPUName = () => "Not supported";
+                GetCPUMaxClock = () => 0; // Not supported
+                GetCPUAvgClock = () => 0; // Not supported
+                GetCPUPhysicalCores = () => 0; // Not supported
+                GetCPULogicalCores = () => 0; // Not supported
                 IsActuallyPlatform = () => false; // This is not Windows
             }
             else if (IsLinux)
@@ -78,6 +90,10 @@ namespace NickStrupat
                 GetMemorySpeed = () => 0; // Not supported
                 GetCPUVendor = Linux.CPUVendor;
                 GetCPUName = Linux.CPUName;
+                GetCPUMaxClock = () => 0; // Not supported
+                GetCPUAvgClock = () => 0; // Not supported
+                GetCPUPhysicalCores = () => 0; // Not supported
+                GetCPULogicalCores = () => 0; // Not supported
                 IsActuallyPlatform = () => false; // This is not Windows
             }
             else
@@ -94,9 +110,13 @@ namespace NickStrupat
         private static Func<UInt64> GetAvailablePhysicalMemory;
         private static Func<UInt64> GetTotalVirtualMemory;
         private static Func<UInt64> GetAvailableVirtualMemory;
-        private static Func<String> GetCPUVendor;
         private static Func<int> GetMemorySpeed;
+        private static Func<String> GetCPUVendor;
         private static Func<String> GetCPUName;
+        private static Func<UInt32> GetCPUMaxClock;
+        private static Func<UInt32> GetCPUAvgClock;
+        private static Func<UInt16> GetCPUPhysicalCores;
+        private static Func<UInt16> GetCPULogicalCores;
         private static Func<bool> IsActuallyPlatform;
 
         public UInt64 TotalPhysicalMemory => GetTotalPhysicalMemory.Invoke();
@@ -106,6 +126,10 @@ namespace NickStrupat
         public int MemorySpeed => GetMemorySpeed.Invoke();
         public String CPUVendor => GetCPUVendor.Invoke();
         public String CPUName => GetCPUName.Invoke();
+        public UInt32 CPUMaxClock => GetCPUMaxClock.Invoke();
+        public UInt32 CPUAvgClock => GetCPUAvgClock.Invoke();
+        public UInt16 CPUPhysicalCores => GetCPUPhysicalCores.Invoke();
+        public UInt16 CPULogicalCores => GetCPULogicalCores.Invoke();
 
         /// <summary>
         /// If this OS is actually what it seems to be (and is not being emulated)
